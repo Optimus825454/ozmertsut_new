@@ -1,0 +1,399 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Dashboard {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<style>
+.cyber-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.cyber-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(145deg, #1a2035 0%, #1e2842 100%);
+    z-index: -1;
+}
+
+.cyber-card {
+    transition: all 0.3s ease;
+    border: none;
+    margin-bottom: 1.5rem;
+}
+
+.cyber-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 30px rgba(8, 136, 255, 0.5);
+}
+
+.cyber-card .card-body {
+    background: linear-gradient(145deg, rgba(28, 45, 86, 0.95), rgba(41, 66, 122, 0.85));
+    border: 1px solid rgba(8, 136, 255, 0.3);
+    border-radius: 15px;
+    position: relative;
+    overflow: hidden;
+    padding: 1.5rem;
+}
+
+.cyber-card .card-body::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(8, 136, 255, 0.1),
+        transparent
+    );
+    transform: rotate(45deg);
+    animation: shine 3s infinite;
+}
+
+@keyframes shine {
+    0% {
+        transform: translateX(-100%) rotate(45deg);
+    }
+    100% {
+        transform: translateX(100%) rotate(45deg);
+    }
+}
+
+.cyber-icon {
+    position: relative;
+    background: linear-gradient(145deg, #1e3c72, #2a5298);
+    border-radius: 50%;
+    padding: 15px;
+    box-shadow: 0 0 20px rgba(8, 136, 255, 0.3);
+    margin-right: 1rem;
+}
+
+.cyber-text {
+    text-shadow: 0 0 10px rgba(8, 136, 255, 0.5);
+    letter-spacing: 1px;
+}
+
+.cyber-chart {
+    background: linear-gradient(145deg, rgba(28, 45, 86, 0.95), rgba(41, 66, 122, 0.85));
+    border: 1px solid rgba(8, 136, 255, 0.3);
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgba(8, 136, 255, 0.2);
+    padding: 1.5rem;
+    height: 100%;
+}
+
+.cyber-list-item {
+    background: rgba(20, 30, 60, 0.7);
+    border: 1px solid rgba(8, 136, 255, 0.2);
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    transition: all 0.3s ease;
+}
+
+.cyber-list-item:hover {
+    background: rgba(20, 30, 60, 0.9);
+    border-color: rgba(8, 136, 255, 0.4);
+    transform: scale(1.02);
+}
+
+.cyber-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba(8, 136, 255, 0.3);
+}
+
+.cyber-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
+}
+
+.cyber-stats {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.main-content {
+    padding-top: 2rem !important;
+}
+
+.cyber-footer {
+    background: linear-gradient(145deg, rgba(28, 45, 86, 0.95), rgba(41, 66, 122, 0.85));
+    border-top: 1px solid rgba(8, 136, 255, 0.3);
+    padding: 1.5rem 0;
+    margin-top: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.cyber-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(8, 136, 255, 0.5),
+        transparent
+    );
+    animation: scanline 2s linear infinite;
+}
+
+@keyframes scanline {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.cyber-footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.cyber-footer-text {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(8, 136, 255, 0.5);
+}
+
+.cyber-footer-links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.cyber-footer-link {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 0.25rem 0;
+}
+
+.cyber-footer-link:hover {
+    color: #0888ff;
+    text-shadow: 0 0 10px rgba(8, 136, 255, 0.5);
+}
+
+.cyber-footer-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: #0888ff;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+}
+
+.cyber-footer-link:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="cyber-background"></div>
+
+<main class="main-content position-relative border-radius-lg">
+    <div class="cyber-container">
+        <!-- İstatistik Kartları -->
+        <div class="row g-4">
+            <div class="col-xl-3 col-sm-6">
+                <div class="cyber-card">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-12">
+                                <div class="numbers">
+                                    <p class="text-sm mb-0 text-uppercase font-weight-bold text-white cyber-text">GÜNLÜK SÜT</p>
+                                    <h5 class="font-weight-bolder text-white cyber-text cyber-value" style="font-size: 1.5rem; white-space: nowrap;">{{ "{:,.2f}".format(daily_milk|float).replace(',', '.').replace('.', ',', 1) }} Lt</h5>
+                                    <p class="mb-0 cyber-stats">
+                                        <span class="{% if milk_percentage >= 0 %}text-success{% else %}text-danger{% endif %} text-sm font-weight-bolder">{{ "{:+.1f}".format(milk_percentage|float).replace('.', ',') }}%</span>
+                                        <span class="text-white text-sm">dünden</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-sm-6">
+                <div class="cyber-card">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-12">
+                                <div class="numbers">
+                                    <p class="text-sm mb-0 text-uppercase font-weight-bold text-white cyber-text">ORTALAMA YAĞ</p>
+                                    <h5 class="font-weight-bolder text-white cyber-text cyber-value" style="font-size: 1.5rem; white-space: nowrap;">%{{ "{:.2f}".format(average_fat_ratio|float).replace('.', ',') }}</h5>
+                                    <p class="mb-0 cyber-stats">
+                                        <span class="text-white text-sm">Toplam: {{ "{:,.2f}".format(total_milk|float).replace(',', '.').replace('.', ',', 1) }} Lt</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-sm-6">
+                <div class="cyber-card">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-12">
+                                <div class="numbers">
+                                    <p class="text-sm mb-0 text-uppercase font-weight-bold text-white cyber-text">AYLIK YEM SATIŞ</p>
+                                    <h5 class="font-weight-bolder text-white cyber-text cyber-value" style="font-size: 1.5rem; white-space: nowrap;">{{ "{:,.0f}".format(monthly_feed_count|float).replace(',', '.') }} Adet</h5>
+                                    <p class="mb-0 cyber-stats">
+                                        <span class="{% if feed_percentage >= 0 %}text-success{% else %}text-danger{% endif %} text-sm font-weight-bolder">{{ "{:+.1f}".format(feed_percentage|float).replace('.', ',') }}%</span>
+                                        <span class="text-white text-sm">geçen aydan</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-sm-6">
+                <div class="cyber-card">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-12">
+                                <div class="numbers">
+                                    <p class="text-sm mb-0 text-uppercase font-weight-bold text-white cyber-text">AYLIK GİDER</p>
+                                    <h5 class="font-weight-bolder text-white cyber-text cyber-value" style="font-size: 1.5rem; white-space: nowrap;">{{ "{:,.2f}".format(monthly_expense|float).replace(',', '.').replace('.', ',', 1) }} TL</h5>
+                                    <p class="mb-0 cyber-stats">
+                                        <span class="{% if expense_percentage >= 0 %}text-success{% else %}text-danger{% endif %} text-sm font-weight-bolder">{{ "{:+.1f}".format(expense_percentage|float).replace('.', ',') }}%</span>
+                                        <span class="text-white text-sm">geçen aydan</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grafikler -->
+        <div class="row g-4 mt-4">
+            <div class="col-lg-6">
+                <div class="cyber-chart">
+                    <h6 class="text-capitalize text-white cyber-text cyber-title">ARAÇLARA GÖRE SÜT MİKTARI</h6>
+                    <div class="chart">
+                        <canvas id="milkQuantityChart" class="chart-canvas" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="cyber-chart">
+                    <h6 class="text-capitalize text-white cyber-text cyber-title">ARAÇLARA GÖRE SÜT YAĞI</h6>
+                    <div class="chart">
+                        <canvas id="milkFatChart" class="chart-canvas" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+{{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+<script>
+// Süt miktarı grafiği
+const milkQuantityCtx = document.getElementById('milkQuantityChart').getContext('2d');
+const milkQuantityChart = new Chart(milkQuantityCtx, {
+    type: 'line',
+    data: {
+        labels: {{ dates|tojson }},
+        datasets: {{ milk_datasets|tojson }}
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: 'Araç Bazında Günlük Süt Miktarı (Lt)'
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    callback: function(value) {
+                        return value.toLocaleString('tr-TR') + ' Lt';
+                    }
+                }
+            }
+        }
+    }
+});
+
+// Yağ oranı grafiği
+const milkFatCtx = document.getElementById('milkFatChart').getContext('2d');
+const milkFatChart = new Chart(milkFatCtx, {
+    type: 'line',
+    data: {
+        labels: {{ dates|tojson }},
+        datasets: {{ fat_datasets|tojson }}
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: 'Araç Bazında Süt Yağ Oranı (%)'
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    callback: function(value) {
+                        return value.toLocaleString('tr-TR') + ' %';
+                    }
+                }
+            }
+        }
+    }
+});
+</script>
+{% endblock javascripts %}

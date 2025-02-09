@@ -1,0 +1,981 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Süt Teslimatları {% endblock title %}
+
+{% block stylesheets %}
+<style>
+.cyber-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.cyber-card {
+    background: linear-gradient(145deg, rgba(28, 45, 86, 0.95), rgba(41, 66, 122, 0.85));
+    border: 1px solid rgba(8, 136, 255, 0.3);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 0 30px rgba(8, 136, 255, 0.2);
+}
+
+.cyber-title {
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(8, 136, 255, 0.5);
+}
+
+.cyber-table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #fff;
+}
+
+.cyber-table th {
+    background: rgba(8, 136, 255, 0.1);
+    padding: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 2px solid rgba(8, 136, 255, 0.3);
+}
+
+.cyber-table td {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(8, 136, 255, 0.2);
+}
+
+.cyber-table tbody tr {
+    transition: all 0.3s ease;
+}
+
+.cyber-table tbody tr:hover {
+    background: rgba(8, 136, 255, 0.1);
+    transform: scale(1.01);
+}
+
+.cyber-button {
+    background: linear-gradient(145deg, #1e3c72, #2a5298);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.cyber-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(8, 136, 255, 0.4);
+}
+
+.cyber-status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.cyber-status-pending {
+    background: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.cyber-status-completed {
+    background: rgba(40, 167, 69, 0.2);
+    color: #28a745;
+    border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+.cyber-form-step {
+    display: none;
+}
+
+.cyber-form-step.active {
+    display: block;
+}
+
+.cyber-step-indicator {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.cyber-step {
+    flex: 1;
+    text-align: center;
+    padding: 1rem;
+    position: relative;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.cyber-step.active {
+    color: #fff;
+    text-shadow: 0 0 10px rgba(8, 136, 255, 0.5);
+}
+
+.cyber-step::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: rgba(8, 136, 255, 0.3);
+}
+
+.cyber-step.active::after {
+    background: #0888ff;
+    box-shadow: 0 0 10px rgba(8, 136, 255, 0.5);
+}
+
+.cyber-form-group {
+    margin-bottom: 1.5rem;
+}
+
+.cyber-label {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+}
+
+.cyber-input {
+    background: rgba(20, 30, 60, 0.7);
+    border: 1px solid rgba(8, 136, 255, 0.3);
+    border-radius: 8px;
+    color: #fff;
+    padding: 0.75rem 1rem;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.cyber-input:focus {
+    outline: none;
+    border-color: rgba(8, 136, 255, 0.6);
+    box-shadow: 0 0 15px rgba(8, 136, 255, 0.3);
+}
+
+.cyber-receipt {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(8, 136, 255, 0.2);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+}
+
+.cyber-receipt-title {
+    text-align: center;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.cyber-receipt-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.cyber-receipt-label {
+    font-weight: 600;
+}
+
+.cyber-action-button {
+    background: none;
+    border: 1px solid rgba(8, 136, 255, 0.3);
+    border-radius: 4px;
+    color: #fff;
+    padding: 0.25rem 0.75rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    margin-left: 0.5rem;
+}
+
+.cyber-action-button:hover {
+    background: rgba(8, 136, 255, 0.1);
+    border-color: rgba(8, 136, 255, 0.5);
+}
+
+.cyber-action-button.delete {
+    border-color: rgba(220, 53, 69, 0.3);
+}
+
+.cyber-action-button.delete:hover {
+    background: rgba(220, 53, 69, 0.1);
+    border-color: rgba(220, 53, 69, 0.5);
+}
+
+/* Makbuz stilleri */
+.cyber-receipt {
+    background: rgba(20, 30, 60, 0.9);
+    border: 2px solid rgba(8, 136, 255, 0.4);
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(8, 136, 255, 0.2);
+}
+
+.cyber-receipt-title {
+    color: #0088ff;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(8, 136, 255, 0.5);
+    letter-spacing: 2px;
+}
+
+.cyber-receipt-number, .cyber-receipt-date {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+}
+
+.cyber-receipt-section {
+    border-bottom: 1px solid rgba(8, 136, 255, 0.2);
+    padding-bottom: 1rem;
+}
+
+.cyber-receipt-section:last-child {
+    border-bottom: none;
+}
+
+.cyber-receipt-section-title {
+    color: #0088ff;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.cyber-receipt-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.cyber-receipt-label {
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+}
+
+.cyber-receipt-value {
+    font-weight: 600;
+    color: #fff;
+}
+
+.cyber-receipt-notes {
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(8, 136, 255, 0.1);
+    padding: 1rem;
+    border-radius: 8px;
+    min-height: 60px;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.7);
+    transition: all 0.3s ease;
+}
+
+.btn-close:hover {
+    color: #fff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.cyber-logo {
+    color: #0088ff;
+    text-shadow: 0 0 20px rgba(8, 136, 255, 0.7);
+}
+
+.cyber-receipt {
+    background: rgba(20, 30, 60, 0.9);
+    border: 2px solid rgba(8, 136, 255, 0.4);
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(8, 136, 255, 0.2);
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.cyber-receipt-section {
+    background: rgba(8, 136, 255, 0.05);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.cyber-receipt-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(8, 136, 255, 0.1);
+}
+
+.cyber-receipt-row:last-child {
+    border-bottom: none;
+}
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="cyber-container py-4">
+    <div class="cyber-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="cyber-title mb-0">Süt Teslimatları</h2>
+            <button class="cyber-button" onclick="openNewDeliveryModal()">
+                Yeni Teslimat
+            </button>
+        </div>
+
+        <!-- Filtreler -->
+        <div class="cyber-filters mb-4">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="cyber-label">Araç</label>
+                    <select class="cyber-input" id="vehicleFilter">
+                        <option value="">Tümünü Göster</option>
+                        {% for vehicle in deliveries|map(attribute='vehicle_plate')|unique|sort %}
+                        {% if vehicle %}
+                        <option value="{{ vehicle }}">{{ vehicle }}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="cyber-label">Tarih</label>
+                    <select class="cyber-input" id="dateFilter">
+                        <option value="">Tümünü Göster</option>
+                        {% for date in unique_dates %}
+                        <option value="{{ date }}">{{ date }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="cyber-table" id="deliveriesTable">
+                <thead>
+                    <tr>
+                        <th>Tarih</th>
+                        <th>Fabrika</th>
+                        <th>Araç - Şoför</th>
+                        <th>Yağ Oranı (%)</th>
+                        <th>Miktar (Lt)</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for delivery in deliveries %}
+                    <tr data-vehicle="{{ delivery.vehicle_plate }}" data-date="{{ delivery.delivery_date.strftime('%Y-%m-%d') }}">
+                        <td>{{ delivery.delivery_date.strftime('%d.%m.%Y') }}</td>
+                        <td>{{ delivery.factory_name }}</td>
+                        <td>{{ delivery.vehicle_plate }} - {{ delivery.driver_name }}</td>
+                        <td>%{{ "%.2f"|format(delivery.fat_ratio|float)|replace('.', ',') }}</td>
+                        <td>{{ "{:,.2f}".format(delivery.quantity|float).replace(',', 'temp').replace('.', ',').replace('temp', '.') }} Lt</td>
+                        <td>
+                            <button class="cyber-action-button" onclick="showDeliveryDetails({{ delivery.id }})">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            {% if current_user.is_superadmin and not delivery.is_accounted %}
+                            <button class="cyber-action-button edit" onclick="editDelivery({{ delivery.id }})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="cyber-action-button delete" onclick="deleteDelivery({{ delivery.id }})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr class="cyber-summary">
+                        <td colspan="3"><strong>ÖZET</strong></td>
+                        <td><strong>Ort: <span id="avgFatRatio">0,00</span>%</strong></td>
+                        <td><strong>Toplam: <span id="totalQuantity">0,00</span> Lt</strong></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Teslimat Detay Modal -->
+<div class="modal fade" id="deliveryDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content cyber-modal">
+            <div class="modal-header border-0">
+                <h5 class="modal-title text-white">Teslimat Makbuzu</h5>
+                <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="cyber-receipt p-4">
+                    <div class="text-center mb-4">
+                        <div class="cyber-logo mb-3">
+                            <i class="fas fa-truck-loading fa-3x text-info"></i>
+                        </div>
+                        <h4 class="cyber-receipt-title mb-2">SÜT TESLİMAT MAKBUZU</h4>
+                        <div class="cyber-receipt-number mb-3">
+                            Makbuz No: <strong id="detailReceiptNumber">-</strong>
+                        </div>
+                        <div class="cyber-receipt-date">
+                            Tarih: <strong id="detailDate">-</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="cyber-receipt-section mb-4">
+                                <h6 class="cyber-receipt-section-title mb-3">Fabrika Bilgileri</h6>
+                                <div class="cyber-receipt-row">
+                                    <span class="cyber-receipt-label">Fabrika Adı:</span>
+                                    <span id="detailFactory" class="cyber-receipt-value">-</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="cyber-receipt-section mb-4">
+                                <h6 class="cyber-receipt-section-title mb-3">Araç Bilgileri</h6>
+                                <div class="cyber-receipt-row">
+                                    <span class="cyber-receipt-label">Araç Plakası:</span>
+                                    <span id="detailVehicle" class="cyber-receipt-value">-</span>
+                                </div>
+                                <div class="cyber-receipt-row">
+                                    <span class="cyber-receipt-label">Şoför:</span>
+                                    <span id="detailDriver" class="cyber-receipt-value">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="cyber-receipt-section mb-4">
+                        <h6 class="cyber-receipt-section-title mb-3">Süt Bilgileri</h6>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="cyber-receipt-row">
+                                    <span class="cyber-receipt-label">Miktar:</span>
+                                    <span id="detailQuantity" class="cyber-receipt-value">-</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="cyber-receipt-row">
+                                    <span class="cyber-receipt-label">Yağ Oranı:</span>
+                                    <span id="detailFatRatio" class="cyber-receipt-value">-</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="cyber-receipt-row">
+                                    <span class="cyber-receipt-label">pH Değeri:</span>
+                                    <span id="detailPhValue" class="cyber-receipt-value">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="cyber-receipt-section mb-4">
+                        <h6 class="cyber-receipt-section-title mb-3">Durum Bilgileri</h6>
+                        <div class="cyber-receipt-row">
+                            <span class="cyber-receipt-label">Muhasebe Durumu:</span>
+                            <span id="detailAccountingStatus" class="cyber-receipt-value">-</span>
+                        </div>
+                    </div>
+                    
+                    <div class="cyber-receipt-section">
+                        <h6 class="cyber-receipt-section-title mb-3">Notlar</h6>
+                        <div class="cyber-receipt-notes" id="detailNotes">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Yeni Teslimat Modal -->
+<div class="modal fade" id="deliveryModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content cyber-modal">
+            <div class="modal-header border-0">
+                <h5 class="modal-title text-white">Yeni Süt Teslimatı</h5>
+                <button type="button" class="btn-close text-white" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="cyber-step-indicator">
+                    <div class="cyber-step active" data-step="1">Fabrika Bilgileri</div>
+                    <div class="cyber-step" data-step="2">Teslimat Detayları</div>
+                    <div class="cyber-step" data-step="3">Kalite Bilgileri</div>
+                    <div class="cyber-step" data-step="4">Onay</div>
+                </div>
+
+                <form id="deliveryForm">
+                    <!-- Adım 1: Fabrika Bilgileri -->
+                    <div class="cyber-form-step active" data-step="1">
+                        <div class="cyber-form-group">
+                            <label class="cyber-label">Süt Fabrikası</label>
+                            <select class="cyber-input" name="factory_name" required>
+                                <option value="">Fabrika Seçin</option>
+                                {% for factory in factories %}
+                                <option value="{{ factory.name }}">{{ factory.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="cyber-form-group">
+                            <label class="cyber-label">Teslimat Tarihi</label>
+                            <input type="date" class="cyber-input" name="delivery_date" required>
+                        </div>
+                        <div class="cyber-form-group">
+                            <label class="cyber-label">Makbuz Numarası</label>
+                            <input type="text" class="cyber-input" name="receipt_number">
+                        </div>
+                    </div>
+
+                    <!-- Adım 2: Teslimat Detayları -->
+                    <div class="cyber-form-step" data-step="2">
+                        <div class="cyber-form-group">
+                            <label class="cyber-label">Araç Plakası</label>
+                            <select class="cyber-input" name="vehicle_plate" required>
+                                <option value="">Araç Seçin</option>
+                                {% for vehicle in vehicles %}
+                                <option value="{{ vehicle.plate }}">{{ vehicle.plate }} - {{ vehicle.driver_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="cyber-form-group">
+                            <label class="cyber-label">Şoför Adı</label>
+                            <input type="text" class="cyber-input" name="driver_name" readonly>
+                        </div>
+                        <div class="cyber-form-group">
+                            <label class="cyber-label">Miktar (Lt)</label>
+                            <input type="number" class="cyber-input" name="quantity" step="0.01" required>
+                        </div>
+                    </div>
+
+                    <!-- Adım 3: Kalite Bilgileri -->
+                    <div class="cyber-form-step" data-step="3">
+                        <div class="cyber-form-group">
+                            <label class="cyber-label">Yağ Oranı (%)</label>
+                            <input type="number" class="cyber-input" name="fat_ratio" step="0.01" required>
+                        </div>
+                        <div class="cyber-form-group">
+                            <label class="cyber-label">pH Değeri</label>
+                            <input type="number" class="cyber-input" name="ph_value" step="0.01">
+                        </div>
+                    </div>
+
+                    <!-- Adım 4: Onay -->
+                    <div class="cyber-form-step" data-step="4">
+                        <div class="cyber-receipt">
+                            <h6 class="cyber-receipt-title">Teslimat Özeti</h6>
+                            <div id="receiptContent">
+                                <!-- JavaScript ile doldurulacak -->
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="cyber-action-button" onclick="previousStep()">Geri</button>
+                <button type="button" class="cyber-button" onclick="nextStep()" id="nextButton">İleri</button>
+                <button type="button" class="cyber-button" onclick="saveDelivery()" id="saveButton" style="display: none;">Kaydet</button>
+                <button type="button" class="cyber-button" onclick="updateDelivery()" id="updateButton" style="display: none;">Güncelle</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+{{ super() }}
+<script>
+let currentStep = 1;
+const totalSteps = 4;
+
+function openNewDeliveryModal() {
+    currentStep = 1;
+    updateStepDisplay();
+    $('#deliveryModal').modal('show');
+}
+
+function updateStepDisplay() {
+    // Step göstergelerini güncelle
+    document.querySelectorAll('.cyber-step').forEach(step => {
+        const stepNum = parseInt(step.dataset.step);
+        if (stepNum === currentStep) {
+            step.classList.add('active');
+        } else {
+            step.classList.remove('active');
+        }
+    });
+
+    // Form adımlarını güncelle
+    document.querySelectorAll('.cyber-form-step').forEach(step => {
+        const stepNum = parseInt(step.dataset.step);
+        if (stepNum === currentStep) {
+            step.classList.add('active');
+        } else {
+            step.classList.remove('active');
+        }
+    });
+
+    // Butonları güncelle
+    const backButton = document.querySelector('.modal-footer button[onclick="previousStep()"]');
+    const nextButton = document.getElementById('nextButton');
+    const saveButton = document.getElementById('saveButton');
+    const updateButton = document.getElementById('updateButton');
+    const isEditMode = document.querySelector('#deliveryModal .modal-title').textContent === 'Teslimat Düzenle';
+
+    if (backButton) {
+        backButton.style.display = currentStep === 1 ? 'none' : 'inline-block';
+    }
+    if (nextButton) {
+        nextButton.style.display = currentStep === totalSteps ? 'none' : 'inline-block';
+    }
+    if (saveButton) {
+        saveButton.style.display = !isEditMode && currentStep === totalSteps ? 'inline-block' : 'none';
+    }
+    if (updateButton) {
+        updateButton.style.display = isEditMode && currentStep === totalSteps ? 'inline-block' : 'none';
+    }
+
+    if (currentStep === totalSteps) {
+        updateReceiptPreview();
+    }
+}
+
+function nextStep() {
+    if (currentStep < totalSteps) {
+        currentStep++;
+        updateStepDisplay();
+    }
+}
+
+function previousStep() {
+    if (currentStep > 1) {
+        currentStep--;
+        updateStepDisplay();
+    }
+}
+
+function updateReceiptPreview() {
+    const form = document.getElementById('deliveryForm');
+    const formData = new FormData(form);
+    
+    // Tarihi formatla
+    const date = new Date(formData.get('delivery_date'));
+    const formattedDate = date.toLocaleString('tr-TR');
+
+    const receiptHtml = `
+        <div class="cyber-receipt-row">
+            <span class="cyber-receipt-label">Fabrika:</span>
+            <span>${formData.get('factory_name')}</span>
+        </div>
+        <div class="cyber-receipt-row">
+            <span class="cyber-receipt-label">Tarih:</span>
+            <span>${formattedDate}</span>
+        </div>
+        <div class="cyber-receipt-row">
+            <span class="cyber-receipt-label">Makbuz No:</span>
+            <span>${formData.get('receipt_number') || '-'}</span>
+        </div>
+        <div class="cyber-receipt-row">
+            <span class="cyber-receipt-label">Araç:</span>
+            <span>${formData.get('vehicle_plate')}</span>
+        </div>
+        <div class="cyber-receipt-row">
+            <span class="cyber-receipt-label">Şoför:</span>
+            <span>${formData.get('driver_name')}</span>
+        </div>
+        <div class="cyber-receipt-row">
+            <span class="cyber-receipt-label">Miktar:</span>
+            <span>${formData.get('quantity')} Lt</span>
+        </div>
+        <div class="cyber-receipt-row">
+            <span class="cyber-receipt-label">Yağ Oranı:</span>
+            <span>${formData.get('fat_ratio')}%</span>
+        </div>
+        <div class="cyber-receipt-row">
+            <span class="cyber-receipt-label">pH Değeri:</span>
+            <span>${formData.get('ph_value') || '-'}</span>
+        </div>
+    `;
+
+    document.getElementById('receiptContent').innerHTML = receiptHtml;
+}
+
+function saveDelivery() {
+    const form = document.getElementById('deliveryForm');
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData);
+    
+    // Tarihi doğru formata dönüştür
+    const deliveryDate = new Date(data.delivery_date);
+    data.delivery_date = deliveryDate.getFullYear() + '-' + 
+                        String(deliveryDate.getMonth() + 1).padStart(2, '0') + '-' + 
+                        String(deliveryDate.getDate()).padStart(2, '0') + ' 00:00';
+    
+    // Sayısal değerleri dönüştür
+    data.quantity = parseFloat(data.quantity);
+    data.fat_ratio = parseFloat(data.fat_ratio);
+    if (data.ph_value) data.ph_value = parseFloat(data.ph_value);
+
+    fetch('/api/milk-factory-deliveries', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            cyberNotify.success('Teslimat başarıyla kaydedildi');
+            $('#deliveryModal').modal('hide');
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            cyberNotify.error('Hata: ' + result.message);
+        }
+    })
+    .catch(error => {
+        cyberNotify.error('Bir hata oluştu: ' + error);
+    });
+}
+
+// Araç seçildiğinde şoför adını otomatik doldur
+document.querySelector('select[name="vehicle_plate"]').addEventListener('change', function() {
+    const selectedOption = this.options[this.selectedIndex];
+    const driverName = selectedOption.text.split(' - ')[1] || '';
+    document.querySelector('input[name="driver_name"]').value = driverName;
+});
+
+// Tarih alanına varsayılan değer ata
+document.addEventListener('DOMContentLoaded', function() {
+    const now = new Date();
+    const defaultDate = now.toISOString().split('T')[0];
+    const deliveryDateInput = document.querySelector('input[name="delivery_date"]');
+    if (deliveryDateInput) {
+        deliveryDateInput.value = defaultDate;
+    }
+});
+
+// Filtreleme fonksiyonu
+function filterTable() {
+    const vehicleFilter = document.getElementById('vehicleFilter').value;
+    const dateFilter = document.getElementById('dateFilter').value;
+    let totalQuantity = 0;
+    let totalFatRatio = 0;
+    let visibleRows = 0;
+
+    document.querySelectorAll('#deliveriesTable tbody tr').forEach(row => {
+        const vehicle = row.getAttribute('data-vehicle');
+        const date = row.getAttribute('data-date');
+        
+        const matchesVehicle = !vehicleFilter || vehicle === vehicleFilter;
+        const matchesDate = !dateFilter || date === dateFilter;
+        
+        if (matchesVehicle && matchesDate) {
+            row.style.display = '';
+            visibleRows++;
+            
+            // Toplam ve ortalama hesaplama
+            const quantity = parseFloat(row.querySelector('td:nth-child(5)').textContent.replace(/[^\d,.]/g, '').replace('.', '').replace(',', '.'));
+            const fatRatio = parseFloat(row.querySelector('td:nth-child(4)').textContent.replace(/[^\d,.]/g, '').replace(',', '.'));
+            
+            if (!isNaN(quantity)) totalQuantity += quantity;
+            if (!isNaN(fatRatio)) totalFatRatio += fatRatio;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+
+    // Özet satırını güncelle
+    document.getElementById('totalQuantity').textContent = Number(totalQuantity).toLocaleString('tr-TR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    document.getElementById('avgFatRatio').textContent = visibleRows > 0 ? Number(totalFatRatio / visibleRows).toLocaleString('tr-TR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : "0,00";
+}
+
+// Filtre değişikliklerini dinle
+document.getElementById('vehicleFilter').addEventListener('change', filterTable);
+document.getElementById('dateFilter').addEventListener('change', filterTable);
+
+// Sayfa yüklendiğinde özeti hesapla
+document.addEventListener('DOMContentLoaded', filterTable);
+
+// Teslimat detaylarını göster
+function showDeliveryDetails(id) {
+    fetch(`/api/milk-factory-deliveries/${id}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const delivery = data.delivery;
+                document.getElementById('detailReceiptNumber').textContent = delivery.receipt_number || '-';
+                document.getElementById('detailDate').textContent = new Date(delivery.delivery_date).toLocaleDateString('tr-TR');
+                document.getElementById('detailFactory').textContent = delivery.factory_name;
+                document.getElementById('detailVehicle').textContent = delivery.vehicle_plate;
+                document.getElementById('detailDriver').textContent = delivery.driver_name;
+                document.getElementById('detailQuantity').textContent = `${Number(delivery.quantity).toLocaleString('tr-TR', {minimumFractionDigits: 2, maximumFractionDigits: 2})} Lt`;
+                document.getElementById('detailFatRatio').textContent = `%${Number(delivery.fat_ratio).toLocaleString('tr-TR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                document.getElementById('detailPhValue').textContent = delivery.ph_value ? Number(delivery.ph_value).toLocaleString('tr-TR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '-';
+                document.getElementById('detailAccountingStatus').textContent = delivery.is_accounted ? 'Muhasebeleşti' : 'Bekliyor';
+                document.getElementById('detailNotes').textContent = delivery.notes || '-';
+                
+                $('#deliveryDetailsModal').modal('show');
+            } else {
+                cyberNotify.error('Teslimat detayları alınamadı: ' + data.message);
+            }
+        })
+        .catch(error => {
+            cyberNotify.error('Bir hata oluştu: ' + error);
+        });
+}
+
+// Teslimatı sil
+function deleteDelivery(id) {
+    Swal.fire({
+        title: 'Emin misiniz?',
+        text: "Bu teslimat kaydı kalıcı olarak silinecek!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Evet, sil!',
+        cancelButtonText: 'İptal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/api/milk-factory-deliveries/${id}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    cyberNotify.success('Teslimat başarıyla silindi');
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    cyberNotify.error('Hata: ' + data.message);
+                }
+            })
+            .catch(error => {
+                cyberNotify.error('Bir hata oluştu: ' + error);
+            });
+        }
+    });
+}
+
+// Teslimatı düzenle
+function editDelivery(id) {
+    fetch(`/api/milk-factory-deliveries/${id}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const delivery = data.delivery;
+                
+                // Form alanlarını doldur
+                const form = document.getElementById('deliveryForm');
+                form.querySelector('select[name="factory_name"]').value = delivery.factory_name;
+                form.querySelector('input[name="delivery_date"]').value = delivery.delivery_date.split(' ')[0];
+                form.querySelector('input[name="receipt_number"]').value = delivery.receipt_number || '';
+                form.querySelector('select[name="vehicle_plate"]').value = delivery.vehicle_plate;
+                form.querySelector('input[name="driver_name"]').value = delivery.driver_name;
+                form.querySelector('input[name="quantity"]').value = delivery.quantity;
+                form.querySelector('input[name="fat_ratio"]').value = delivery.fat_ratio;
+                form.querySelector('input[name="ph_value"]').value = delivery.ph_value || '';
+
+                // Modal başlığını güncelle
+                document.querySelector('#deliveryModal .modal-title').textContent = 'Teslimat Düzenle';
+                
+                // Butonları güncelle
+                document.getElementById('saveButton').style.display = 'none';
+                document.getElementById('updateButton').style.display = currentStep === totalSteps ? 'inline-block' : 'none';
+                document.getElementById('updateButton').setAttribute('onclick', `updateDelivery(${id})`);
+                
+                // Modalı aç
+                $('#deliveryModal').modal('show');
+                
+                // İlk adımı göster
+                currentStep = 1;
+                updateStepDisplay();
+            } else {
+                cyberNotify.error('Teslimat bilgileri alınamadı: ' + data.message);
+            }
+        })
+        .catch(error => {
+            cyberNotify.error('Bir hata oluştu: ' + error);
+        });
+}
+
+// Teslimatı güncelle
+function updateDelivery(id) {
+    const form = document.getElementById('deliveryForm');
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData);
+    
+    // Tarihi doğru formata dönüştür
+    const deliveryDate = new Date(data.delivery_date);
+    data.delivery_date = deliveryDate.getFullYear() + '-' + 
+                        String(deliveryDate.getMonth() + 1).padStart(2, '0') + '-' + 
+                        String(deliveryDate.getDate()).padStart(2, '0') + ' 00:00';
+    
+    // Sayısal değerleri dönüştür
+    data.quantity = parseFloat(data.quantity);
+    data.fat_ratio = parseFloat(data.fat_ratio);
+    if (data.ph_value) data.ph_value = parseFloat(data.ph_value);
+
+    fetch(`/api/milk-factory-deliveries/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            cyberNotify.success('Teslimat başarıyla güncellendi');
+            $('#deliveryModal').modal('hide');
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            cyberNotify.error('Hata: ' + result.message);
+        }
+    })
+    .catch(error => {
+        cyberNotify.error('Bir hata oluştu: ' + error);
+    });
+}
+
+// Modal kapatıldığında formu sıfırla
+$('#deliveryModal').on('hidden.bs.modal', function () {
+    const form = document.getElementById('deliveryForm');
+    form.reset();
+    
+    // Başlığı sıfırla
+    document.querySelector('#deliveryModal .modal-title').textContent = 'Yeni Süt Teslimatı';
+    
+    // Butonları sıfırla
+    document.getElementById('saveButton').style.display = 'none';
+    document.getElementById('updateButton').style.display = 'none';
+    document.getElementById('updateButton').setAttribute('onclick', 'updateDelivery()');
+    
+    // İlk adıma dön
+    currentStep = 1;
+    updateStepDisplay();
+});
+</script>
+{% endblock javascripts %} 
