@@ -1,0 +1,4 @@
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/httpdvfi/public_html/ozmertsut/
+    - /bin/cp -R * $DEPLOYPATH
